@@ -4,7 +4,7 @@
     font-style: normal;
     font-display: swap;
     src: local('EB Garamond'),
-         url(/EBGaramond-Regular-en.woff2) format('woff2');
+         url(/eddieapoc/EBGaramond-Regular-en.woff2) format('woff2');
 }
 
 #Eddie {
@@ -108,7 +108,7 @@
 
 #list-series {
     border-radius: 2ex;
-    background-image: url(/Conan.jpg);
+    background-image: url(/eddieapoc/Conan.jpg);
     background-position: 0 50%;
 }
 

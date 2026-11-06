@@ -13,7 +13,7 @@
     font-weight: 400;
     font-display: swap;
     src: local('Inter Italic'),
-         url(/Inter-Italic-latin.woff2) format('woff2');
+         url(/eddieapoc/Inter-Italic-latin.woff2) format('woff2');
 } */
 
 @font-face {
@@ -31,7 +31,7 @@
     font-weight: 700;
     font-display: swap;
     src: local('Inter Bold Italic'),
-         url(/Inter-BoldItalic-latin.woff2) format('woff2');
+         url(/eddieapoc/Inter-BoldItalic-latin.woff2) format('woff2');
 } */
  
 @font-face { 
