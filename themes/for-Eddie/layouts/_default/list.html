@@ -1,0 +1,123 @@
+{{ define "main" }}
+    {{- $pages := .RegularPagesRecursive }}
+    {{- if .IsHome }}
+        {{- $pages = where site.RegularPages "Type" "post" }}
+    {{- end }}
+    {{- $paginator := .Paginate $pages }}
+    {{- $pagerSize := .Params.Paginate }}
+    {{- if $pagerSize }}
+        {{- $paginator = .Paginate $pages $pagerSize }}
+    {{- end }}
+    {{- $firstPage := and .IsHome (not $paginator.HasPrev) }}
+
+    {{- if $firstPage }}
+        <section id="landing">
+            <section id="Eddie">
+                <header>
+                    <h1><span>The</span> <span>Missed Focus Maestro</span></a></h1>
+                    <div id="bio">
+                        <span>Lofi documentary photographer recording what's left of the American dream.</span>
+                        <span>Mostly power lines and portajohns.</span>
+                    </div>
+                    <div id="elsewhere">
+                        <span>Elsewhere:</span>
+                    {{- partial "menu.html" (dict "menuID" "author" "noid" true "page" .) }}
+                    </div>
+                </header>
+            </section>
+            <section id="list-series" class="taxonomy">
+                <header>
+                    <h1 style="text-align:left;padding-left:5vw;"><a href="/series/conan/"><span>+ The</span> <span>Barbarian Son</span></a></h1>
+                </header>
+                <section>
+                    <h2 style="font-size: var(--normalsize);"><a href="/series/">Explore the Series</a></h2>
+                    {{ partial "taxonomies.html" (dict "taxonomy" "series" "withPages" false "limit" 10 ) }}
+                </section>
+            </section>
+        </section>
+    {{- end }}
+
+    <section>
+        {{- if ne .Kind "taxonomy" }}
+            <h1 id="feed-title">{{ if .IsHome }}<span>The</span> <span>Posts</span>{{ else }}{{ .Title }}{{ end }}</h1>
+            <div id="feed" class="col" role="feed" aria-labelledby="feed-title">
+            {{- range $index, $page := $paginator.Pages }}
+                {{- $counter := add $index 1 }}
+                {{- $hasCover := partial "cover.html" (dict "page" .) }}
+                {{- $alt := or .Params.Alt .Params.coverAlt .Params.imagesAlt }}
+                {{- $film := .GetTerms "film" }}
+                {{- $camera := .GetTerms "camera" }}
+                {{- $lens := .GetTerms "lens" }}
+                {{ template "photocard" (dict "page" $page "paginator" $paginator "counter" $counter "hasCover" $hasCover "alt" $alt "film" $film "camera" $camera "lens" $lens "PublishDate" .PublishDate) }}
+            {{- end }}
+            </div>
+            {{ partial "pagination.html" . }}  
+        {{ else }}
+            {{- $title := .LinkTitle }}
+            <h1 id="feed-title">Explore the <span class="{{ .Data.Singular }}">{{ $title }}</span></h1>
+            {{- if eq .Data.Plural "tags" }}
+                <div id="list-tags">
+                    {{ partial "taxonomies.html" (dict "taxonomy" "tags" "withPages" false ) }}
+                </div>
+            {{- else }}
+                <div  id="feed" class="col" role="feed" aria-labelledby="feed-title">
+                    {{ partial "taxonomies.html" (dict "taxonomy" .Data.Plural "withPages" true) }}
+                </div>
+            {{- end }}
+        {{- end }}
+    </section>
+
+
+    {{- if $firstPage }}
+        {{ template "block_taxonomy" . }}
+    {{- end }}
+
+{{ end }}
+
+{{- define "photocard" -}}
+    {{ $date := .PublishDate | time.Format ":date_long" }}
+    {{ $title := or .page.Title $date }}
+    <article
+        aria-posinset="{{ .counter }}"
+        aria-setsize="{{ .paginator.NumberOfElements }}"
+        >
+        <a href="{{ .page.RelPermalink }}">
+            <h2><strong>{{ $title }}</strong></h2>
+            <img src="{{ .hasCover }}" alt="{{ .alt }}" {{ if not .alt }}class="no-alt"{{ end }} loading="lazy">
+        </a>
+        <footer tabindex="-1">
+            {{ with .film }}{{ range . | first 1 }}<strong>{{ .Title }}</strong>{{ end }}{{ end }}
+            {{ with .camera }}{{ range . | first 1 }}<strong>{{ .Title }}</strong>{{ end }}{{ end }}
+            {{ with .lens }}{{ range . | first 1 }}<strong>{{ .Title }}</strong>{{ end }}{{ end }}
+        </footer>
+    </article>
+{{- end }}
+
+{{- define "block_taxonomy" }}
+    <div id="list-taxonomy">
+        <section id="list-film" class="taxonomy">
+            <header>
+                <h1><a href="/film"><span>The</span> <span>Films</span></a></h1>
+            </header>
+            <section>
+                {{ partial "taxonomies.html" (dict "taxonomy" "film" "withPages" false "limit" 10 ) }}
+            </section>
+        </section>
+        <section id="list-camera" class="taxonomy flip">
+            <header>
+                <h1><a href="/camera"><span>The</span> <span>Cameras</span></a></h1>
+            </header>
+            <section>
+                {{ partial "taxonomies.html" (dict "taxonomy" "camera" "withPages" false "limit" 10 ) }}
+            </section>
+        </section>
+        <section id="list-lens" class="taxonomy">
+            <header>
+                <h1><a href="/lens"><span>The</span> <span>Lenses</span></a></h1>
+            </header>
+            <section>
+                {{ partial "taxonomies.html" (dict "taxonomy" "lens" "withPages" false "limit" 10 ) }}
+            </section>
+        </section>
+    </div>
+{{- end }}

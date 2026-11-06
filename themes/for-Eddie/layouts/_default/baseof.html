@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+{{- $lang := or site.Language.Locale site.Language.LanguageCode site.Language.Lang }}
+{{- $dir := or site.Language.Direction site.Language.LanguageDirection "ltr" }}
+<html lang="{{ $lang }}" dir="{{ $dir }}">
+<head>
+    {{ partial "head.html" . }}
+    {{ block "head" . }}{{ end }}
+</head>
+<body>
+    <input id="lightSwitch" type="checkbox" aria-label="Light Switch" aria-description="Change Color Schemes">
+    <main id="{{ .Kind }}">
+        <header>{{ partial "header.html" . }}</header>
+        <div id="top"></div>
+        {{ block "main" . }}{{ end }}
+        {{- if not .IsHome }}
+            {{- partial "header/breadcrumb.html" . }}
+        {{- end }}
+        <footer>{{ partial "footer.html" . }}</footer>
+        <div id="background-body" role="presentation" aria-hidden="true"><div class="grain"></div>
+    </main>
+    {{- if eq (lower site.Params.analytics.append) "body" -}}
+        {{ partialCached "analytics.html" . }}
+    {{- end }}
+</body>
+</html>

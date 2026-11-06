@@ -1,0 +1,38 @@
+{{- $bsky := or .Params.skeet .Params.bsky .Params.bluesky }}
+{{- if $bsky -}}
+<section id="comments" class="presentation textwidth" aria-label="{{ i18n "comments" }}"
+    data-i18n-noComment="{{ i18n "noComment" }}"
+    data-i18n-err="{{ i18n "fediverseErr" }}"
+    data-i18n-loading="{{ i18n "fediverseIsLoading" }}"
+    data-i18n-replies="{{ i18n "fediverseReplies" }}"
+    data-i18n-reblogs="{{ i18n "fediverseReblogs" }}"
+    data-i18n-favourites="{{ i18n "fediverseFavourites" }}"
+    open>
+    <noscript>
+        <div id="comments-error" role="alert">{{ i18n "noScript" }} {{ i18n "noComment" }}</div>
+    </noscript>
+    {{- with $bsky }}
+        <a id="bluesky" href="{{ . }}" rel="nofollow"><i class="icon bluesky"></i><span>Respond with Bluesky</span></a>
+        <ul class="presentation" id="bsky-comments" aria-busy="true" aria-label="{{ i18n "comments" }}"
+            data-url="{{ . }}"></ul>
+    {{- end }}
+    {{ partialCached "fediscuss/js.html" . }}
+</section>
+{{- end }}
+
+{{- define "partials/fediscuss/js.html" -}}
+    {{- with resources.Get "js/fedisky.js" }}
+        {{- with resources.ExecuteAsTemplate "fedisky.js" $ . | minify }}
+            {{- $js := . }}
+            {{- if eq hugo.Environment "development" }}
+                <script src="{{ $js.Permalink }}" defer></script>
+            {{- else }}
+                {{- with . | fingerprint "sha256" }}
+                    <script src="{{ $js.Permalink }}"
+                        integrity="{{ .Data.Integrity }}" crossorigin="anonymous"
+                        defer></script>
+                {{- end }}
+            {{- end }}
+        {{- end }}
+    {{- end }}
+{{- end }}

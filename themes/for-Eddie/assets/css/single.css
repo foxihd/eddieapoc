@@ -1,0 +1,72 @@
+#term > section,
+#taxonomy > section,
+#page > article {
+    min-height: 72vh;
+}
+
+#page article > footer {
+    line-height: 1.8;
+    font-size: var(--small);
+}
+
+#page article > footer > span {
+    margin-right: 1rem;
+}
+
+#tags a::before {
+    content: '#';
+}
+
+#comments {
+    display: grid;
+    margin: auto;
+    font-size: var(--small);
+}
+
+#bluesky > i {
+    display: inline-flex;
+    font-size: 1.4em;
+    line-height: 1;
+    padding: 0 4pt 1pt 0;
+}
+
+#bluesky:hover > i,
+#bluesky:focus > i {
+    transform-origin: center center;
+    animation: flutter 0.2s alternate infinite;
+}
+
+#bluesky {
+    margin: 4rem auto;
+    padding: 1ex 1em 1ex 1.2ex;
+    border-radius: 1rem;
+    background: #006aff;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: .2ex;
+    font-size: var(--footnotesize);
+    display: flex;
+    align-items: center;
+}
+
+ul#bsky-comments {
+    padding: 0;
+}
+
+@keyframes flutter {
+    from {
+        transform: rotateY(0);
+    }
+    to {
+        transform: rotateY(80deg);
+    }
+}
+
+@-webkit-keyframeskeyframes flutter {
+    from {
+        -webkit-transform: rotateY(0);
+    }
+    to {
+        -webkit-transform: rotateY(80deg);
+    }
+}

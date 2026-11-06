@@ -1,0 +1,150 @@
+{{ $light := site.Params.style.light }}
+{{ $dark := site.Params.style.dark }}
+
+main {
+    --off: #000;
+    --ac: {{ or $light.ac "#4A4D3D" }};
+    --bg: {{ or $light.bg "#fcfaf8" }};
+    --fg: {{ or $light.fg "#111" }};
+    --mid:{{ or $light.mid "#545454" }};
+    color: var(--fg);
+}
+
+main.switch,
+input:checked + main {
+        --off: #fff;
+        --ac: {{ or $dark.ac "#d5ad2a" }};
+        --bg: {{ or $dark.bg "#111" }};
+        --fg: {{ or $dark.fg "#fcfaf8" }};
+        --mid: {{ or $dark.mid "#9e9e9e"}}
+}
+
+/* header::before,
+main::before {
+    -webkit-transition: var(--flashGuard);
+            transition: var(--flashGuard);
+    position: fixed;
+    top: 0;
+    left: 0;
+    mix-blend-mode: difference;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' width='96' height='96'><defs><filter id='grain' x='0' y='0' width='1' height='1'><feTurbulence type='turbulence' baseFrequency='1.21' numOctaves='1' seed='5' stitchTiles='stitch' x='-1%' y='-1%' width='102%' height='102%' result='turbulence'/><feSpecularLighting surfaceScale='12' specularConstant='12' specularExponent='12' lighting-color='%23ffffff' x='-1%' y='-1%' width='102%' height='102%' in='turbulence' result='specularLighting'><feDistantLight azimuth='9' elevation='98'/></feSpecularLighting></filter></defs><rect width='98' height='98' fill='%23000000' id='blackbody' x='-1' y='-1' opacity='.03' /><rect width='98' height='98' fill='%23ffffff' filter='url(%23grain)' x='-1' y='-1' opacity='.03' /></svg>");
+    background-color: var(--bg);
+    width: 100%;
+    height: 100%;
+    content: '';
+    z-index: -1;
+}
+
+header::before {
+    height: var(--vhead);
+} */
+
+#background-header,
+#background-body {
+    display: flex !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -2;
+    width: 100vw;
+    height: 100vh;
+    -webkit-transition: var(--flashGuard);
+            transition: var(--flashGuard);
+    background-color: var(--bg);
+}
+
+#background-header {
+    border-bottom: var(--opt-border);
+    height: var(--vhead);
+}
+
+.grain {
+    position: absolute;
+    mix-blend-mode: difference;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' width='96' height='96'><defs><filter id='grain' x='0' y='0' width='1' height='1'><feTurbulence type='turbulence' baseFrequency='1.21' numOctaves='1' seed='5' stitchTiles='stitch' x='-1%' y='-1%' width='102%' height='102%' result='turbulence'/><feSpecularLighting surfaceScale='12' specularConstant='12' specularExponent='12' lighting-color='%23ffffff' x='-1%' y='-1%' width='102%' height='102%' in='turbulence' result='specularLighting'><feDistantLight azimuth='9' elevation='98'/></feSpecularLighting></filter></defs><rect width='98' height='98' fill='%23000000' id='blackbody' x='-1' y='-1' opacity='.03' /><rect width='98' height='98' fill='%23ffffff' filter='url(%23grain)' x='-1' y='-1' opacity='.03' /></svg>");
+    width: 100%;
+    height: 100%;
+}
+
+/* credit to @mrozilla on codepen https://codepen.io/mrozilla/pen/OJJNjRb */
+
+#menu,
+#lightSwitch {
+    position: absolute;
+    clip-path: circle(0);
+}
+
+#lightSwitchIndicator {
+    --b: transparent;
+    margin-right: 0;
+    margin-left: auto;
+	display: flex;
+	padding: 1ex;
+    border: 2pt solid var(--b);
+	border-radius: 1ex;
+    order: 3;
+}
+
+#lightSwitchIndicator::before {
+    --tsf: scale(0.75);
+    display: block;
+    outline: none;
+    border-radius: 2em;
+    box-shadow: var(--sun);
+    width: var(--size);
+    height: var(--size);
+    color: var(--ac);
+    content: '';
+    transform: var(--tsf);
+    -webkit-transform: var(--tsf);
+    transition: 1s ease-in;
+}
+
+#lightSwitch:checked + main > header > #lightSwitchIndicator::before {
+    --tsf: scale(1);
+    box-shadow: var(--moon);
+}
+
+#lightSwitch:focus + main > header > #lightSwitchIndicator {
+    --b: var(--fg);
+}
+
+@media (prefers-color-scheme: dark) {
+    main {
+        --off: #fff;
+        --ac: {{ or $dark.ac "#d5ad2a" }};
+        --bg: {{ or $dark.bg "#111" }};
+        --fg: {{ or $dark.fg "#fcfaf8" }};
+        --mid: {{ or $dark.mid "#9e9e9e"}}
+    }
+
+    main.switch,
+    input:checked + main {
+        --off: #000;
+        --ac: {{ or $light.ac "#4A4D3D" }};
+        --bg: {{ or $light.bg "#fcfaf8" }};
+        --fg: {{ or $light.fg "#111" }};
+        --mid:{{ or $light.mid "#545454" }};
+    }
+
+    #lightSwitchIndicator::before {
+        --tsf: scale(1);
+        box-shadow: var(--moon);
+        --size: 1em;
+        display: block;
+        outline: none;
+        border-radius: 2em;
+        width: var(--size);
+        height: var(--size);
+        color: var(--ac);
+        content: '';
+        transform: var(--tsf);
+        -webkit-transform: var(--tsf);
+        transition: 1s ease-in;
+    }
+
+    #lightSwitch:checked + main > header > #lightSwitchIndicator::before {
+        --tsf: scale(0.75);
+        box-shadow: var(--sun);
+    }
+}

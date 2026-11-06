@@ -1,0 +1,122 @@
+#breadcrumb,
+#landing,
+#list-taxonomy,
+#feed-title,
+#feed {
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 1280px;
+}
+
+#feed-title {
+    margin-top: 0.5in;
+    text-align: center;
+}
+
+#feed.col {
+    column-width: 320px;
+    gap: 24px;
+}
+
+#feed.col > article {
+    position: unset;
+    margin-bottom: 24px;
+}
+
+#feed > article {
+    --h: scale(1);
+    position: absolute;
+    transition: 0.3s ease-out;
+    break-inside: avoid;
+}
+
+#feed > article:focus-within,
+#feed > article:hover {
+    --h: scale(0.96);
+}
+
+#feed h2 {
+	margin: 0;
+	font-size: var(--normalsize);
+}
+
+#feed > article a {
+    display: block;
+    color: var(--fg);
+}
+
+#main-menu a,
+#feed > article strong,
+article > footer strong {
+    letter-spacing: 0.3ex;
+    font-variant-caps: all-small-caps;
+}
+
+#feed > article > footer strong {
+    font-size: var(--scriptsize);
+    font-weight: 400;
+}
+
+#feed > article > footer {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    padding: 0 0 1pt;
+    overflow-x: auto;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+#pagination {
+	padding: 2rem 0;
+}
+
+#pagination ul {
+    display: flex;
+    align-items: center;
+    margin: auto;
+    border-radius: 3rem;
+    padding: 1ex;
+    width: fit-content;
+    font-size: var(--scriptsize);
+    gap: 1rem;
+}
+
+#pagination a {
+    --s: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--s);
+    height: var(--s);
+    color: var(--fg);
+    border-radius: 2rem;
+    border: 1pt solid transparent;
+}
+
+#pagination a[aria-current=true] {
+    --s: 3rem;
+}
+
+#pagination a:hover,
+#pagination a:focus,
+#pagination a[aria-current=true] {
+    position: relative;
+    border: 1pt solid var(--ac);
+    overflow: hidden;
+    color: var(--ac);
+}
+
+#pagination a:hover::before,
+#pagination a:focus::before,
+#pagination a[aria-current=true]::before {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    opacity: 0.33;
+    background: var(--ac);
+    content: '';
+}

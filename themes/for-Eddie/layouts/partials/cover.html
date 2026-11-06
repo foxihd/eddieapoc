@@ -1,0 +1,6 @@
+{{- $page := .page }}
+{{- $src := or .page.Params.cover .page.Params.image }}
+{{- with .page.Resources.GetMatch "cover.*" }}
+    {{- $src = .Permalink }}
+{{- end }}
+{{- return $src }}

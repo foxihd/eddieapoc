@@ -1,0 +1,40 @@
+{{- $taxonomy := .taxonomy }}
+{{- $limit := .limit }}
+{{- $withPages := .withPages }}
+{{- with index site.Taxonomies $taxonomy }}
+{{- if $withPages }}
+    {{ range .ByCount -}}
+        {{- $pages := .Pages }}
+        {{- $permalink := .Page.Permalink }}
+        {{- $title := .Page.Title }}
+        {{- range first 1 $pages }}
+            {{- $alt := or .Params.Alt .Params.coverAlt .Params.imagesAlt }}
+            {{- $hasCover := partial "cover.html" (dict "page" .) }}
+            <article>
+                <a href="{{ $permalink }}">
+                    <h2><strong>{{ $title }}</strong></h2>
+                    <img src="{{ $hasCover }}" alt="{{ $alt }}" {{ if not $alt }}class="no-alt"{{ end }} loading="lazy">
+                </a>
+            </article>
+        {{- end }}
+    {{ end }}
+{{- else }}
+    <ul class="presentation">
+        {{- $index := 0 }}
+        {{ range .ByCount -}}
+            {{- $index = add $index 1 }}
+            {{- if or (le $index $limit) (not $limit) -}}
+                <li>
+                    <a href="{{ .Page.Permalink }}"
+                        aria-label="{{ i18n $taxonomy 1 }}: {{ .Page.Title }}"
+                        aria-description="{{ printf "%d %s" .Count (i18n "posts" .Count) }}"
+                        data-post-counter="{{ printf "%d" .Count }}"
+                        >
+                        <span>{{ .Page.Title }}</span>
+                    </a>
+                </li>
+            {{- end }}
+        {{- end }}
+    </ul>
+{{- end }}
+{{- end }}

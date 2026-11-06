@@ -1,0 +1,81 @@
+{{/*  <a id="to-content" href="#{{ if .IsPage }}content{{ else }}{{ .Kind }}{{ end }}">{{ i18n "toContent" }}</a>  */}}
+
+<a href="#top" id="to-top" aria-label="To Content Top"></a>
+
+{{- if not .IsHome }}
+    {{ partialCached "header/logo.html" . }}
+{{- else }}
+    {{ partial "header/logo.html" . }}
+{{- end }}
+
+<label id="lightSwitchIndicator" for="lightSwitch" aria-label="Light Switch" aria-description="Change Color Schemes"></label>
+<input id="menu" type="checkbox" aria-label="Main Menu" aria-controls="main-menu">
+<label for="menu" class="icon menu" aria-controls="main-menu"><span class="hide">Main Menu</span></label>
+{{- partial "menu.html" (dict "menuID" "main" "page" .) }}
+
+<div id="background-header" class="background" aria-hidden="true"><div class="grain"></div></div>
+
+{{- define "partials/header/author-menu.html" -}}
+    {{- with site.Taxonomies.author }}
+        {{- if eq 1 (len . ) }}
+            {{- range . }}
+                {{- $author := urlize .Page.LinkTitle }}
+                {{- partial "menu.html" (dict "menuID" $author "type" "author" "open" "open" "page" $ )}}
+            {{- end }}
+        {{- end }}
+    {{- end }}
+{{- end }}
+
+{{- define "partials/header/logo.html" -}}
+    {{ "<!-- logo.html -->" | safeHTML }}
+    {{- $logoMark := site.Params.logo.logoMark }}
+    {{- $logoType := site.Params.logo.logoType }}
+    {{- $logoInlineCSS := site.Params.logo.logoInlineCSS }}
+    {{- $siteTitle := or site.Title site.Params.Title }}
+    {{- if or $logoType $logoMark $logoInlineCSS }}
+    <div id="logo">
+        <a href="{{ absLangURL "" }}" aria-label="{{ $siteTitle }}" aria-description="{{ i18n "home" }}">
+            {{- with site.Params.logo.logoMarkDark }}
+                <img id="logomark--dark" src="{{ . }}" alt="{{ $siteTitle }}" />
+            {{- end }}
+            {{- if or $logoMark $logoInlineCSS }}
+                <img id="logomark" {{ with $logoMark }}src="{{ . }}"{{ end }} alt="{{ $siteTitle }}" />
+            {{- end }}
+            {{- if or $logoType (not (or $logoMark $logoInlineCSS)) }}
+                {{- $siteTitle := or site.Title site.Params.Title }}
+                {{- with $siteTitle -}}
+                    {{- $estimatedWidth := printf "%dpt" (mul (len . ) 15) -}}
+                    <svg id="logotype" xmlns="http://www.w3.org/2000/svg" version="1.1" width="{{ $estimatedWidth }}" height="22pt" aria-label="{{ . }}">
+                        <text id="logotype__text" y="19pt" x="0">{{ . }}</text>
+                    </svg>
+                {{- end }}
+            {{- end }}
+        </a>
+        <hr class="hide"/>
+    </div>
+    {{- end }}
+{{- end }}
+
+{{- define "partials/header/breadcrumb.html" -}}
+    {{- with .Ancestors.Reverse }}
+    <nav id="breadcrumb">
+        <strong>You are here: &nbsp;</strong>
+        <ul class="inline presentation">
+            {{- range . }}
+                {{- if .IsHome }}
+                <li>
+                    <a href="{{ .Permalink }}" aria-current="true">Home</a>
+                </li>
+                {{- else }}
+                <li>
+                    <a href="{{ .Permalink }}" aria-current="true">{{ .Title }}</a>
+                </li>
+                {{- end }}
+            {{- end }}
+            <li>
+                <a href="{{ $.Permalink }}" aria-current="page">{{ or $.Title ($.Date | time.Format "2006-01-02" ) }}</a>
+            </li>
+        </ul>
+    </nav>
+    {{- end }}
+{{- end }}

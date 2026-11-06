@@ -1,0 +1,53 @@
+baseURL = 'https://example.org/'
+locale = 'en-us'
+title = 'Eddie Apoc'
+theme = 'for-Eddie'
+
+[params]
+    [params.author]
+        name = 'Author Name'
+    [params.logo]
+        logoType = true
+
+[taxonomies]
+    camera = 'camera'
+    lens = 'lens'
+    film = 'film'
+    series = 'series'
+    tag    = "tags"
+
+[permalinks]
+    post = 'post/:slug'
+
+[pagination]
+    pagerSize = 27
+
+[menu]
+    [[menu.main]]
+        name       = 'Cameras'
+        pageRef    = 'camera'
+        weight     = 1
+    [[menu.main]]
+        name       = 'Films'
+        pageRef    = 'film'
+        weight     = 2
+    [[menu.main]]
+        name       = 'Lenses'
+        pageRef    = 'lens'
+        weight     = 3
+    [[menu.main]]
+        name       = 'Series'
+        pageRef    = 'series'
+        weight     = 4
+    [[menu.author]]
+        name       = 'Bluesky'
+        URL        = 'https://bsky.app/profile/eddieapoc.bsky.social' 
+    [[menu.author]]
+        name       = 'Foto'
+        URL        = 'https://the.fotoapp.co/eddieapoc' 
+    [[menu.author]]
+        name       = 'Flickr'
+        URL        = 'https://www.flickr.com/photos/201726338@N07/' 
+    [[menu.author]]
+        name       = 'Lomography'
+        URL        = 'https://www.lomography.com/homes/eddieapoc' 

@@ -1,0 +1,113 @@
+{{ "<!-- menu.html -->" | safeHTML }}
+{{- $menuID := .menuID }}
+{{- $page := .page }}
+{{- $noid := .noid }}
+{{- $main := eq $menuID "main" }}
+
+{{- with index site.Menus $menuID }}
+    <nav {{ if not $noid }} id="{{ printf "%s-menu" $menuID }}" {{ end }} {{ if $main }}aria-label="On This Site"{{ end }}>
+        <ul class="presentation {{ if eq $menuID "author" }}inline{{ end }}">
+            {{ partial "inline/menu/walk.html" (dict "page" $page "menuID" $menuID "menuEntries" .) }}
+        </ul>
+    </nav>
+{{- end }}
+
+{{- /*---------------------- end of menu.html ----------------------*/}}
+
+{{- define "partials/inline/menu/walk.html" -}}
+    {{- $page := .page }}
+    {{- $menuID := .menuID }}
+    {{- $main := eq $menuID "main" }}
+    {{ range .menuEntries -}}
+        {{- $name := .Name }}
+        {{- $class := .Params.class }}
+        {{- $hasDestination := false }}
+        {{- if or .URL .PageRef }}
+            {{- $hasDestination = true }}
+        {{- end }}
+        {{- $attrs := dict "href" .URL }}
+        {{- if $page.IsMenuCurrent .Menu . }}
+            {{- $attrs = merge $attrs (dict "aria-current" "page") }}
+        {{- else if $page.HasMenuCurrent .Menu . }}
+            {{- $attrs = merge $attrs (dict "aria-current" "true") }}
+        {{- end }}
+        {{- $desc := .Post }}
+        {{- if $desc }}
+            {{- $attrs = merge $attrs (dict "class" "has-desc") }}
+        {{- end }}
+        {{- $icon := .Pre }}
+        {{- $u := urls.Parse .URL -}}
+        {{- $identifier := .Identifier }}
+        {{- with $identifier }}
+            {{- if not $name }}
+                {{- $attrs = merge $attrs (dict "title" . "aria-label" .) }}
+            {{- end }}
+        {{- end }}
+        <li {{ with $class }}class="{{ . }}"{{ end }}>
+            {{- if .Children }}
+                {{- template "menuItemWithChildren" dict "item" . "attrs" $attrs "link" $hasDestination "icon" $icon "name" $name "desc" $desc "menuID" $menuID "page" $page }}
+            {{- else }}
+                {{- template "menuItem" dict "attrs" $attrs "name" $name "desc" $desc "icon" $icon "identifier" $identifier "u" $u }}
+            {{- end }}
+        </li>
+    {{- end }}
+{{- end }}
+
+{{- define "menuItem" }}
+    <a  {{ range $key, $val := .attrs }}
+            {{- with $val }}
+                {{- printf " %s=%s" $key $val | safeHTMLAttr }}
+            {{- end }}
+        {{- end }}
+        {{- if .desc }}
+            aria-label="{{ .name }}"
+            aria-description="{{ .desc }}"
+        {{- end -}}
+        {{- if .u.IsAbs }}
+            target="_blank"
+            rel="external noopener noreferrer nofollow"
+        {{- end }}
+        >
+        {{- if and .icon (not .desc) }}
+            <i class="icon">{{ .icon }}</i>
+        {{- end }}
+        {{- if .name }}
+            <span>
+                {{- if and .icon .desc }}
+                    <i class="icon" aria-hidden="true">{{ .icon }}</i>
+                {{- end }}
+                {{ .name -}}
+            </span>
+        {{- end }}
+    </a>
+{{- end }}
+
+{{- define "menuItemWithChildren" }}
+    <details>
+        <summary>
+            {{- if and .icon (not .desc) }}
+                <i class="icon">{{ .icon }}</i>
+            {{- end }}
+            <span {{ with .desc }} class="has-desc" aria-description="{{ . }}" {{ end }}>
+                {{- if and .icon .desc }}
+                    <i class="icon" aria-hidden="true">{{ .icon }}</i>
+                {{- end }}
+                {{- .name -}}
+            </span>
+        </summary>
+        <ul class="presentation">
+            {{ partial "inline/menu/walk.html" (dict "page" .page "menuEntries" .item.Children) }}
+            {{- if .hasDestination }}
+                <li class="parent-anchor">
+                    <a  {{- range $key, $val := .attrs }}
+                            {{- printf " %s=%s" $key $val | safeHTMLAttr }}
+                        {{- end }}
+                        aria-label="{{ i18n "seeAll" }}:{{ $.name }}">
+                        {{ with $.icon }}<i class="icon" aria-hidden="true">{{ . }}</i>{{ end }}
+                        <span aria-hidden="true"> {{ $.name }}</span>
+                    </a>
+                </li>
+            {{- end }}
+        </ul>
+    </details>
+{{- end }}

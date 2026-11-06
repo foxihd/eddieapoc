@@ -1,0 +1,320 @@
+{{ if or .Params.headless .Params.target .Params.alias -}}
+    {{- $url := "404.html" | absLangURL }}
+    {{- with or .Params.Target .Params.Alias }}
+        {{- $url = . }}
+    {{- end }}
+    <title>{{ $url }}</title>
+    <link rel="canonical" href="{{ $url }}">
+    <meta name="robots" content="noindex">
+    <meta charset="utf-8">
+    <meta http-equiv="refresh" content="0; url={{ $url }}" />
+{{- else -}}
+    {{ partial "head/meta.html" . -}}
+    {{- $siteTitle := or site.Title site.Params.title | plainify }}
+    {{- $title := cond .IsHome $siteTitle (printf "%s | %s" .Title $siteTitle) | plainify  }}
+    {{ with .OutputFormats.Get "rss" -}}
+        {{ printf `<link rel="%s" type="%s" href="%s" title="%s (RSS)" />` .Rel .MediaType.Type .Permalink $title | safeHTML }}
+    {{ end -}}
+    <script>
+if (localStorage.getItem('lightSwitch')) {
+    document.documentElement.classList.add('s');
+}
+    </script>
+    <style>
+html.s #background-header,
+html.s #background-body,
+html.s main {
+    --flashGuard: 0s;
+    background: {{ or site.Params.style.dark.bg "#111" }};
+}
+@media (prefers-color-scheme: dark) {
+    html.s #background-header,
+    html.s #background-body,
+    html.s main {
+        --flashGuard: 0s;
+        background: {{ or site.Params.style.light.bg "#fcfaf8" }};
+    }
+}
+    </style>
+    {{- partialCached "head/js.html" . -}}
+    {{- partialCached "head/css.html" . -}}
+    {{- if .IsHome }}
+        {{- $pages := where site.RegularPages "Type" "post" }}
+        {{- $paginator := .Paginate $pages }}
+        {{- $pagerSize := .Params.Paginate }}
+        {{- if $pagerSize }}
+            {{- $paginator = .Paginate $pages $pagerSize }}
+        {{- end }}
+        {{- if not $paginator.HasPrev }}
+<style>
+@font-face{font-family:'EBGaramond';font-weight:400;font-style:normal;font-display:swap;src:local('EB Garamond'),url(/EBGaramond-Regular-en.woff2) format('woff2');}#Eddie{position:relative;margin-bottom:1rem;border-radius:2ex;background:#805b5b33;background-image:url('/Eddie.webp');background-position:bottom right;background-repeat:no-repeat;background-size:contain;aspect-ratio:1200/630;}#Eddie>header{display:flex;flex-direction:column;max-width:50%;height:100%;}#bio{padding-left:5rem;}#elsewhere{margin-top:auto;padding:0 0 4rem 5rem;}.taxonomy{display:flex;padding:3rem 0;}.taxonomy.flip{flex-direction:row-reverse;}.taxonomy>header{flex:1 1 40%;}.taxonomy>section{flex:1 1 60%;column-count:2;}.taxonomy>section>ul{padding-left:3rem;list-style:none;counter-reset:li;line-height:3;}.taxonomy>section>ul>li{position:relative;margin-bottom:1ex;padding-bottom:1ex;}.taxonomy>section>ul>li>a{padding:1ex 0;}.taxonomy>section>ul>li>a::before{display:inline-block;position:absolute;left:-3rem;border-radius:2rem;content:counter(li)'.';counter-increment:li;}.taxonomy>section>ul>li>a::after{content:attr(data-post-counter);font-size:var(--footnotesize);background:#8882;padding:2pt 5pt;border-radius:5pt;margin-left:1rem;color:var(--mid);}#feed-title,#Eddie h1,.taxonomy h1{margin-bottom:4rem;text-align:center;line-height:1;font-family:'EBGaramond';}#feed-title span:last-child,#Eddie h1 span:last-child,.taxonomy h1 span:last-child{position:relative;top:1pc;font-size:var(--Huge);}#list-series{border-radius:2ex;background-image:url(/Conan.jpg);background-position:0 50%;}#list-series>header{flex:1 1 60%;}#list-series>section{flex:unset;column-count:1;padding:0 5rem;}#list-series ul{line-height:2;}#list-series a{color:#000;}#list-series a:hover,#list-series a:focus{color:#4A4D3D;}@media only screen and (max-width:1024px){.taxonomy{display:block;padding:2rem}}@media only screen and (max-width:760px){#elsewhere{display:none}}@media only screen and (max-width:640px){.taxonomy>section{column-count:unset}#list-series{background-size:cover;background-position:15% 0%}#landing{--void:1rem}#Eddie>header,#Eddie{aspect-ratio:unset;background-attachment:fixed;max-width:unset;min-height:calc(100vh - var(--vhead) - 1rem)}}@media only screen and (max-width:480px){#list-series{background-size:cover;background-position:25% 0%}#list-series>section{padding:0}#bio{padding:0 2rem}}
+</style>
+        {{- end }}
+    {{- end }}
+
+    {{- with .Resources.GetMatch "*.css" }}
+        <style>{{ .Content | safeCSS }}</style>
+    {{- end }}
+{{- end }}
+
+{{- define "partials/head/js.html" }}
+    {{- with resources.Get "js/main.js" }}
+        {{- with resources.ExecuteAsTemplate "for_ed.js" $ . | minify }}
+            {{- $js := . }}
+            {{- if eq hugo.Environment "development" }}
+                <script src="{{ $js.Permalink }}" defer></script>
+            {{- else }}
+                {{- with . | fingerprint "sha256" }}
+                    <script src="{{ $js.Permalink }}"
+                        integrity="{{ .Data.Integrity }}" crossorigin="anonymous"
+                        defer></script>
+                {{- end }}
+            {{- end }}
+        {{- end }}
+    {{- end }}
+{{- end }}
+
+{{- define "partials/head/css.html" }}
+    {{/*  <link rel="preconnect" href="https://fonts.bunny.net" crossorigin="anonymous" />
+    <link rel="preload" href="https://raw.githubusercontent.com/rsms/inter/master/docs/font-files/Inter-Regular.woff2" as="font" type="font/woff" crossorigin="anonymous" />
+    <link rel="preload" href="https://raw.githubusercontent.com/rsms/inter/master/docs/font-files/Inter-Bold.woff2" as="font" type="font/woff" crossorigin="anonymous" />  */}}
+    {{- $style := slice 
+        (resources.Get "css/fonts.css")
+        (resources.Get "css/scheme.css")
+        (resources.Get "css/main.css")
+        (resources.Get "css/keyframe.css")
+        (resources.Get "css/logotype.css")
+        (resources.Get "css/list.css")
+        (resources.Get "css/single.css")
+        }}
+    {{- with resources.Concat "for-ed.css" $style  }}
+        {{- with resources.ExecuteAsTemplate "for-ed.css" $ . | minify }}
+            {{- $css := . }}
+            {{- if eq hugo.Environment "development" }}
+                <link rel="stylesheet" href="{{ $css.Permalink }}">
+            {{- else }}
+                {{- with . | fingerprint "sha256" }}
+                    <link rel="stylesheet" href="{{ $css.Permalink }}" integrity="{{ .Data.Integrity }}" crossorigin="anonymous">
+                {{- end }}
+            {{- end }}
+        {{- end }}
+    {{- end }}
+{{- end }}
+
+{{- define "partials/head/meta.html" }}
+    {{- $author := or .Params.author .Params.authors | default  site.Params.Author.Name }}
+    {{- with or (.GetTerms "authors") (.GetTerms "author") }}
+        {{- if eq (len .) 1}}
+            {{- range . }}
+                {{- $author = .LinkTitle }}
+            {{- end }}
+        {{- else }}
+            {{- $author = delimit $author ", " " & " }}
+        {{- end }}
+    {{- end }}
+    {{- $siteTitle := or site.Title site.Params.title | plainify }}
+    {{- $permalink := .Permalink }}
+    {{- $title := cond .IsHome $siteTitle (printf "%s | %s" .Title $siteTitle) | plainify  }}
+        {{- $desc := or .Params.Description .Params.Subtitle .Summary | default .Description }}
+        {{- $siteDesc := or site.Params.description site.Params.subtitle }}
+        {{- if and .IsHome $siteDesc }}
+            {{- $desc = $siteDesc  }}
+        {{- else if and (not .IsPage) $siteDesc }}
+            {{- $desc =  printf "%s | %s" .Kind $siteTitle }}
+        {{- end }}
+    {{- $desc = $desc | plainify | htmlUnescape | truncate 150 }}
+    {{- $cover := partial "cover.html" (dict "page" .) }}
+        {{- if or (not $cover) .IsHome }}
+            {{- $cover = or site.Params.images site.Params.socialCard.images }}
+        {{- end }}
+    {{- $keywords := dict }}
+        {{- $tag := or .Params.keywords .Params.tags }}
+        {{- if .IsHome }}
+            {{- $keywords = slice (i18n "home") }}
+        {{- else if $tag }}
+            {{- $keywords = $tag }}
+        {{- end }}
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ $title }}</title>
+    <meta name="author" content="{{ $author }}">
+    {{ with $desc -}}
+        <meta name="description" content="{{ . }}" >
+    {{ end -}}
+    {{ with $keywords -}}
+        <meta name="keywords" content="{{ delimit . "," }}">
+    {{ end -}}
+    <link rel="canonical" href="{{ .Permalink }}">
+    {{ with .Translations -}}
+        {{- range . -}}
+            <link rel="alternate" hreflang="{{ .Language.Lang }}" href="{{ .Permalink }}" title="{{ or .Language.Label .Language.LanguageName }}">
+        {{- end }}
+    {{- end }}
+    {{ partialCached "head/meta/favicon.html" . }}
+    {{- $instance := or site.Params.fediverse.instance site.Params.fediverse.host }}
+    {{- $username := or site.Params.fediverse.username site.Params.fediverse.user }}
+    {{- if and $instance $username }}
+        <link rel="me" href="{{ print "https://" $instance "/@" $username }}">
+    {{ end }}
+
+    {{- $ISO8601 := "2006-01-02T15:04:05-07:00" }}
+    {{- $publishDate := .PublishDate.Format $ISO8601 }}
+    {{- $lastMod := .Lastmod.Format $ISO8601 }}
+
+    {{- $extMeta := or site.Params.extMeta site.Params.socialCard.enable }}
+    {{- if or $extMeta site.Params.socialCard.twitter }}
+        {{ template "twitterCard" (dict "page" . "title" $title "desc" $desc "cover" $cover) }}
+    {{- end }}
+
+    {{- if or $extMeta site.Params.socialCard.opengraph }}
+        {{ template "openGraph" (dict "page" . "siteTitle" $siteTitle "author" $author "title" $title "desc" $desc "cover" $cover "keywords" $keywords "publishDate" $publishDate "lastMod" $lastMod) }}
+    {{- end }}
+
+    {{- if site.Params.socialCard.schema }}
+        {{/*  no HTMl props at the moment  */}}
+        {{- template "schema" (dict "page" . "title" $title "desc" $desc "cover" $cover "keywords" $keywords) }}
+    {{- end }}
+
+    {{- if site.Params.socialCard.jsonLD }}
+        {{/*  permalink needs workaround  */}}
+        {{- template "jsonLD" (dict "page" . "siteTitle" $siteTitle "permalink" $permalink "author" $author "title" $title "desc" $desc "cover" $cover "keywords" $keywords  "publishDate" $publishDate "lastMod" $lastMod) }}
+    {{- end }}
+{{- end }}
+
+{{- define "partials/head/meta/favicon.html" }}
+    {{- with site.Params.favicon }}
+        {{ $appTitle := default .appTitle site.Title }}
+        {{ with .ico -}}<link rel="shortcut icon" href="{{ . }}" />{{ end }}
+        {{ with .apple -}}<link rel="apple-touch-icon" sizes="180x180" href="{{ . }}" /><meta name="apple-mobile-web-app-title" content="{{ $appTitle }}" />{{ end }}
+        {{ with .png -}}<link rel="icon" type="image/png" href="{{ . }}" sizes="96x96" />{{ end }}
+        {{ with .svg -}}<link rel="icon" type="image/svg+xml" href="{{ . }}" />{{ end }}
+        {{ with .webmanifest -}}<link rel="manifest" href="{{ . }}" />{{ end }}
+    {{- end }}
+{{- end }}
+
+{{- define "openGraph" }}
+    {{- $ISO8601 := "2006-01-02T15:04:05-07:00" }}
+    {{- $facebookAdmin := site.Params.socialCard.facebookAdmin }}
+    {{- $facebookAppID := site.Params.socialCard.facebookAppID }}
+    <meta property="og:title" content="{{ .title }}" />
+    <meta property="og:description" content="{{ .desc }}" />
+    <meta property="og:type" content="{{ if .page.IsPage }}article{{ else }}website{{ end }}" />
+    <meta property="og:url" content="{{ .page.Permalink }}" />
+    {{- with .cover }}
+        <meta property="og:image" content="{{ . }}" />
+    {{- end }}
+    <meta property="og:site_name" content="{{ .siteTitle }}" />
+    {{- if .IsPage -}}
+        <meta property="article:author" content="{{ .author }}" />
+        {{- with .publishDate }}
+            <meta property="article:published_time" content="{{ . }}" />
+        {{- end }}
+        {{ with .lastMod }}
+            <meta property="article:modified_time" content="{{ . }}" />
+        {{- end }}
+        {{- with .keywords }}
+            <meta property="article:tags" content="{{ delimit . ", " }}" />
+        {{- end }}
+        {{- with site.RegularPages.Related . | first 5  }}
+            {{- range . }}
+                {{- if ne $ . }}
+                <meta property="og:see_also" content="{{ .Permalink }}">
+                {{- end }}
+            {{- end }}
+        {{- end }}
+    {{- end }}
+{{- end }}
+
+{{- define "twitterCard" }}
+    {{ $twitterCreator := site.Params.socialCard.twitterCreator }}
+    {{ $twitterSite := site.Params.socialCard.twitterSite }}
+    <meta name="twitter:card" content="{{ if .cover }}summary_large_image{{ else }}summary{{ end }}" />
+    <meta name="twitter:title" content="{{ .title }}" />
+    <meta name="twitter:description" content="{{ .desc }}" />
+    {{- with .cover }}
+        <meta name="twitter:image" content="{{ . }}" />
+    {{- end }}
+    {{- with $twitterSite }}
+        <meta name="twitter:site" content="@{{ . }}" />
+    {{- end }}
+    {{- with $twitterCreator }}
+        <meta name="twitter:creator" content="@{{ . }}" />
+    {{- end }}
+{{- end }}
+
+{{- define "schema" }}
+    {{- with .title }}
+        <meta itemprop="name" content="{{ . }}">
+    {{- end }}
+    {{- with .desc }}
+        <meta itemprop="description" content="{{ trim . "\n\r\t " }}">
+    {{- end }}
+    {{- with .PublishDate }}
+        <meta itemprop="datePublished" content="{{ . }}">
+    {{- end }}
+    {{- with .Lastmod }}
+        <meta itemprop="dateModified" content="{{ . }}">
+    {{- end }}
+    {{- with .page.WordCount }}
+        <meta itemprop="wordCount" content="{{ . }}">
+    {{- end }}
+    {{- with .cover }}
+        <meta itemprop="image" content="{{ . }}">
+    {{- end }}
+    {{- with .keywords }}
+        <meta itemprop="keywords" content="{{ delimit . `,` }}">
+    {{- end -}}
+{{- end }}
+
+{{- define "jsonLD" }}
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "mainEntityOfPage": {
+                "@type": "WebPage",
+                "@id": "{{ .Permalink | safeURL }}"
+            },
+            "headline": "{{ .title }}",
+            {{- with .desc }}
+            "description": "{{ . }}",
+            {{- end }}
+            {{- with .cover }}
+            "image": "{{ . }}",
+            {{- end }}
+            {{- with .PublishDate }}
+            "datePublished": "{{ . }}",
+            {{- end }}
+            {{- with .Lastmod }}
+            "dateModified": "{{ . }}",
+            {{- end }}
+            {{- with .author }}
+            "author": {
+                "@type": "Person",
+                "name": "{{ . }}"
+            },
+            {{- end }}
+            {{- $authors := or (.page.GetTerms "authors") (.page.GetTerms "author") }}
+            {{- with $authors }}
+                {{ range . }}
+                    "author": {
+                            "@type": "Person",
+                            "name": "{{ humanize .LinkTitle | title }}"
+                        },
+                {{- end }}
+            {{- end }}
+            "publisher": {
+                "@type": "Organization",
+                "name": "{{ .siteTitle }}",
+                {{- with site.Params.logo.logomark }}
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": "{{ . | absURL }}"
+                }
+                {{- end }}
+            }
+        }
+    </script>
+{{- end }}

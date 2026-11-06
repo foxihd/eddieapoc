@@ -1,0 +1,60 @@
+{{ define "main" }}
+<article class="pagewidth">
+  <header>
+    <h1>{{ .Title }}</h1>
+  </header>
+
+  <section class="content">
+    {{ .Content }}
+  </section>
+
+  <footer>
+    <div id="stats" class="stat" aria-live="polite"></div>
+
+    {{ $dateMachine := .Date | time.Format "2006-01-02T15:04:05-07:00" }}
+    {{ $dateHuman := .Date | time.Format ":date_long" }}
+      <span>
+        <strong>Uploaded:</strong>
+        <time datetime="{{ $dateMachine }}">{{ $dateHuman }}</time>
+      </span>
+    {{- if .Params.film }}
+      <span>
+        <strong>Film:</strong>
+        {{ partial "terms.html" (dict "taxonomy" "film"  "type" "delimiter" "page" .) }}
+      </span>
+    {{- end }}
+    {{- if .Params.camera }}
+      <span>
+        <strong>Camera:</strong>
+        {{- partial "terms.html" (dict "taxonomy" "camera" "type" "delimiter" "page" .) }}
+      </span>
+    {{- end }}
+    {{- with .Params.Notes }}
+      <span>
+        <strong>Notes:</strong>
+        <span>{{ . }}</span>
+      </span>
+    {{- end }}
+    {{- if .Params.lens }}
+      <span>
+        <strong>Lens:</strong>
+        {{- partial "terms.html" (dict "taxonomy" "lens"  "type" "delimiter" "page" .) }}
+      </span>
+    {{- end }}
+      {{- if .Params.series }}
+      <span>
+        <strong>Series:</strong>
+        {{- partial "terms.html" (dict "taxonomy" "series" "type" "delimiter" "page" .) }}
+      </span>
+    {{- end }}
+    {{- if .Params.tags }}
+      <span id="tags">
+        <strong>Tags:</strong>
+        {{- partial "terms.html" (dict "taxonomy" "tags"  "type" "delimiter" "page" .) }}
+      </span>
+    {{- end }}
+
+    {{ partial "fediscuss.html" . }}
+  </footer>
+</article>
+{{ end }}
