@@ -76,7 +76,6 @@ if (bskyRoot) {
             if (bskyCommentsLoaded) return;
             try {
                 const skeetResponse = await fetch(`https://public.api.bsky.app/xrpc/app.bsky.feed.getPostThread?uri=${bskyAPI}`);
-                console.log(`https://public.api.bsky.app/xrpc/app.bsky.feed.getPostThread?uri=${bskyAPI}`)
                 const data = await skeetResponse.json();
                 checkResponseStatus(skeetResponse);
                 addToCounter(data.thread.post.replyCount, data.thread.post.repostCount, data.thread.post.likeCount);
