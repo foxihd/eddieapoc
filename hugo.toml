@@ -2,6 +2,8 @@ baseURL = 'https://example.org/'
 locale = 'en-us'
 title = 'Eddie Apoc'
 theme = 'for-Eddie'
+canonifyURLs = true
+enableRobotsTXT = true
 
 [params]
     [params.author]
