@@ -320,8 +320,10 @@ main > footer > div {
 }
 
 .pagefind-ui__button {
+    margin: 1ex;
     border: none;
     background: none;
+    padding: 1ex;
     width: 100%;
     color: var(--fg);
 }
