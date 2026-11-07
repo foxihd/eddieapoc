@@ -413,6 +413,7 @@ main > footer > div {
         width: 100%;
         display: block !important;
         margin: 0;
+        padding: 1rem 2rem;
     }
 
 }
