@@ -159,6 +159,7 @@ main > header {
     --void: 2rem;
     --max-width: 1920px;
     display: flex;
+    position: -webkit-sticky;
     position: sticky;
     top: 0;
     align-items: center;
