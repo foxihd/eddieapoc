@@ -10,7 +10,7 @@
 
 <label id="lightSwitchIndicator" for="lightSwitch" aria-label="Light Switch" aria-description="Change Color Schemes"></label>
 <input id="menu" type="checkbox" aria-label="Main Menu" aria-controls="main-menu">
-<label for="menu" class="icon menu" aria-controls="main-menu"><span class="hide">Main Menu</span></label>
+<label for="menu" class="icon menu" aria-controls="main-menu" tabindex="-1"><span class="hide">Main Menu</span></label>
 {{- partial "menu.html" (dict "menuID" "main" "page" .) }}
 
 <div id="background-header" class="background" aria-hidden="true"><div class="grain"></div></div>

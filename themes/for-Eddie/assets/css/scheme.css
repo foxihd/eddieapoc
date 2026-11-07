@@ -69,6 +69,7 @@ header::before {
 /* credit to @mrozilla on codepen https://codepen.io/mrozilla/pen/OJJNjRb */
 
 #menu,
+#search,
 #lightSwitch {
     position: absolute;
     clip-path: circle(0);
@@ -76,13 +77,13 @@ header::before {
 
 #lightSwitchIndicator {
     --b: transparent;
+    display: flex;
+    order: 3;
     margin-right: 0;
     margin-left: auto;
-	display: flex;
-	padding: 1ex;
     border: 2pt solid var(--b);
-	border-radius: 1ex;
-    order: 3;
+    border-radius: 1ex;
+    padding: 1ex;
 }
 
 #lightSwitchIndicator::before {
@@ -105,6 +106,7 @@ header::before {
     box-shadow: var(--moon);
 }
 
+#search:focus + label,
 #lightSwitch:focus + main > header > #lightSwitchIndicator {
     --b: var(--fg);
 }

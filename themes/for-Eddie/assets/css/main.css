@@ -215,7 +215,10 @@ main > footer > div {
 }
 
 #main-menu {
+    display: flex;
+    justify-content: space-between;
     order: 2;
+    width: 100%;
 }
 
 #main-menu ul {
@@ -223,6 +226,7 @@ main > footer > div {
     gap: 1ex;
     margin-right: auto;
     padding: 0;
+    order: 1;
 }
 
 #main-menu a {
@@ -244,7 +248,7 @@ main > footer > div {
 }
 
 #breadcrumb {
-    margin-top: 0.5in;
+    margin: 0.5in 0;
     letter-spacing: .2ex;
     color: var(--mid);
     font-variant-caps: all-small-caps;
@@ -265,6 +269,67 @@ main > footer > div {
     background-size: cover;
     width: 10rem;
     height: 16rem;
+}
+
+#search + label {
+    --b: transparent;
+    order: 2;
+    border: 2pt solid var(--b);
+    padding: 0 1ex;
+    border-radius: 1ex;
+}
+
+#searchbox {
+    display: none;
+    position: absolute;
+    top: var(--vhead);
+    right: calc(var(--void) + 2rem);
+    margin-top: 1rem;
+    border-radius: 3ex;
+    background: var(--bg);
+    padding: 1rem;
+    width: 320px;
+    height: auto;
+    max-height: calc(100vh - var(--vhead) - 2rem);
+}
+
+#search:checked ~ #searchbox {
+    display: unset;
+}
+
+.pagefind-ui__search-input {
+    border: 1pt solid var(--mid);
+    border-radius: 1rem;
+    padding: 0 1em;
+    width: 100%;
+    height: 2pc;
+}
+
+.pagefind-ui__search-clear {
+    position: relative;
+    top: -1.5pc !important;
+    right: .3pc;
+    float: right;
+    border: none;
+    border-radius: 2pc;
+    background: 0 0;
+    padding: 0 1ex;
+    height: 0;
+}
+
+.pagefind-ui__button {
+    border: none;
+    background: none;
+    width: 100%;
+    color: var(--fg);
+}
+
+.pagefind-ui__results {
+    display: block;
+    margin: 0;
+    width: 100%;
+    max-height: calc(100vh - var(--vhead) - 14rem);
+    overflow-y: scroll;
 }
 
 @media only screen and (max-width: 640px) {
@@ -306,6 +371,8 @@ main > footer > div {
         border-radius: 3pt;
     }
 
+    #search,
+    #search + label,
     #main-menu {
         display: none;
     }
@@ -313,21 +380,23 @@ main > footer > div {
     #menu:checked + label ~ #main-menu {
         --anm: expand 99ms forwards;
         --tso: top;
-        -webkit-transform: var(--tsf);
-                transform: var(--tsf);
-        -webkit-transform-origin: var(--tso);
-                transform-origin: var(--tso);
         display: block;
         position: fixed;
         top: var(--vhead);
         left: 0;
+        -webkit-transform: var(--tsf);
+                transform: var(--tsf);
+        -webkit-transform-origin: var(--tso);
+                transform-origin: var(--tso);
+        border-radius: 0 0 1ex 1ex;
+        background: var(--bg);
         padding: 0;
         width: 100%;
-        background: var(--bg);
-        text-align: center;
-        border-radius: 0 0 1ex 1ex;
+        max-height: calc(100vh - var(--vhead));
+        overflow-y: auto;
         -webkit-animation: var(--anm);
                 animation: var(--anm);
+        text-align: center;
     }
 
     #main-menu ul {
@@ -335,6 +404,13 @@ main > footer > div {
         padding: 1rem;
         align-items: center;
         line-height: 3;
+    }
+
+    #searchbox {
+        position: unset;
+        width: 100%;
+        display: block !important;
+        margin: 0;
     }
 
 }

@@ -6,6 +6,9 @@
 
 {{- with index site.Menus $menuID }}
     <nav {{ if not $noid }} id="{{ printf "%s-menu" $menuID }}" {{ end }} {{ if $main }}aria-label="On This Site"{{ end }}>
+        {{- if $main }}
+            {{- partial "pagefind" . }}
+        {{- end }}
         <ul class="presentation {{ if eq $menuID "author" }}inline{{ end }}">
             {{ partial "inline/menu/walk.html" (dict "page" $page "menuID" $menuID "menuEntries" .) }}
         </ul>

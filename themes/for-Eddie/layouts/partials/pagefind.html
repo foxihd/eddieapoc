@@ -1,0 +1,27 @@
+<input id="search" type="checkbox" aria-label="Search" aria-controls="searchbox">
+<label for="search" class="icon search" aria-controls="main-menu" tabindex="-1"><span class="hide">Search</span></label>
+<div id="searchbox"></div>
+<script src="/pagefind/pagefind-ui.js" type="text/javascript"></script>
+<script>
+    let pageFindInitialized = false;
+    const initPageFind = function(event) {
+        if (!pageFindInitialized) {
+            new PagefindUI({
+                element: "#searchbox",
+                showImages: false,
+                translations: {
+                    placeholder: "Search"
+                }
+            });
+            // fix PageFind missing input label
+            const pFInput = document.querySelector('.pagefind-ui__search-input');
+            if (pFInput) {
+                pFInput.setAttribute('aria-label', pFInput.getAttribute('placeholder'));
+                pFInput.setAttribute('name', pFInput.getAttribute('placeholder'));
+            }
+            pageFindInitialized = true;
+            document.removeEventListener('DOMContentLoaded', initPageFind);
+        }
+    };
+    document.addEventListener('DOMContentLoaded', initPageFind);
+</script>

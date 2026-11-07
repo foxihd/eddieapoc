@@ -39,7 +39,7 @@
 
     <section>
         {{- if ne .Kind "taxonomy" }}
-            <h1 id="feed-title">{{ if .IsHome }}<span>The</span> <span>Posts</span>{{ else }}{{ .Title }}{{ end }}</h1>
+            <h1 id="feed-title" {{ if not $paginator.HasPrev }}data-pagefind-body{{ end }}>{{ if .IsHome }}<span>The</span> <span>Posts</span>{{ else }}{{ .Title }}{{ end }}</h1>
             <div id="feed" class="col" role="feed" aria-labelledby="feed-title">
             {{- range $index, $page := $paginator.Pages }}
                 {{- $counter := add $index 1 }}
