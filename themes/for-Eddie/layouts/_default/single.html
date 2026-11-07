@@ -1,14 +1,14 @@
 {{ define "main" }}
-<article class="pagewidth">
+<article class="pagewidth" data-pagefind-body>
   <header>
-    <h1 data-pagefind-body>{{ .Title }}</h1>
+    <h1>{{ .Title }}</h1>
   </header>
 
-  <section class="content"  data-pagefind-body>
+  <section class="content">
     {{ .Content }}
   </section>
 
-  <footer data-pagefind-body>
+  <footer>
     <div id="stats" class="stat" aria-live="polite"></div>
 
     {{ $dateMachine := .Date | time.Format "2006-01-02T15:04:05-07:00" }}
