@@ -7,9 +7,9 @@ alt: "Monochrome photo of a small motel with two pine trees behind."
 slug: "3mwvhqxfbac2u"
 bluesky: "https://bsky.app/profile/eddieapoc.bsky.social/post/3mwvhqxfbac2u"
 camera: Nikon FE2
-film: Kodak T-Max
+film: Kodak T-Max P3200
 lens: Nikkor 35-135mm
-notes: "Pushed to 3200"
+notes:
 series:
 tags:
     - FilmPhotography
