@@ -41,6 +41,7 @@
 
 .fed-comments > span > a {
     color: var(--mid);
+    white-space: nowrap;
 }
 
 .fed-comments > span {
