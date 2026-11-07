@@ -219,6 +219,7 @@ main > footer > div {
     justify-content: space-between;
     order: 2;
     width: 100%;
+    align-items: center;
 }
 
 #main-menu ul {
